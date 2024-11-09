@@ -1,18 +1,24 @@
 using JornadaMilhasV1.Modelos;
+using System.Runtime.ConstrainedExecution;
 
 namespace JornadaMilhas.Test
 {
     public class OfertaViagemConstrutor
     {
-        [Fact]
-        public void RetornaOfertaValidaQuandoDadosValidos()
+        [Theory]
+        [InlineData("",null, "2024-01-01", "2024-01-02",0, false)]
+        [InlineData("OrigemTeste", "DestinoTeste", "2024-10-28", "2024-11-02", 100.0, true)]
+        [InlineData(null, "São Paulo", "2024-01-01", "2024-01-01", 0, false)]
+        [InlineData("Vitoria" , "São Paulo", "2024-01-01", "2024-01-01", 0, false)]
+        [InlineData("Rio de Janeiro", "São Paulo", "2024-01-01", "2024-01-02", -500, false)]
+
+        public void RetornaEhValidoDeAcordoComDadosDeEntrada(string origem, string destino, string dataIda,
+            string dataVolta, double preco, bool validacao)
         {
             //cenario - arrange
-            Rota rota = new Rota("OrigemTeste", "DestinoTeste");
-            Periodo periodo = new Periodo(new DateTime(2024, 10, 28), new DateTime(2024, 11, 02));
-            double preco = 100.0;
-            var validacao = true;
-
+            Rota rota = new Rota(origem, destino);
+            Periodo periodo = new Periodo(DateTime.Parse(dataIda), DateTime.Parse(dataVolta));
+            
 
             //ação - act
             OfertaViagem ofertaViagem = new OfertaViagem(rota, periodo, preco);
@@ -63,13 +69,15 @@ namespace JornadaMilhas.Test
         }
 
 
-        [Fact]
-        public void RetornaMensagemDeErroDePrecoInvalidosQuandoPrecoMenorQueZero()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-100)]
+        public void RetornaMensagemDeErroDePrecoInvalidosQuandoPrecoMenorQueZero(double preco)
         {
             // arrange
             Rota rota = new Rota("OrigemTeste", "DestinoTeste");
             Periodo periodo = new Periodo(new DateTime(2024, 10, 28), new DateTime(2024, 11, 02));
-            double preco = -100.0;
+            
 
             //act
             OfertaViagem ofertaViagem = new OfertaViagem(rota, periodo, preco);
