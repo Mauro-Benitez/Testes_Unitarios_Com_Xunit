@@ -9,19 +9,46 @@ namespace JornadaMilhasV1.Modelos;
 
 public class OfertaViagem: Valida
 {
+    public const double DESCONTOMAXIMO = 0.70;
     public int Id { get; set; }
     public Rota Rota { get; set; } 
     public Periodo Periodo { get; set; }
     public double Preco { get; set; }
+    public double Desconto { get; set; }
 
 
     public OfertaViagem(Rota rota, Periodo periodo, double preco)
     {
+        
         Rota = rota;
         Periodo = periodo;
-        Preco = preco;
+        Preco = preco;    
+
+        Validar();
+
+
+    }
+    public OfertaViagem(Rota rota, Periodo periodo, double preco, double desconto)
+    {    
+        Rota = rota;
+        Periodo = periodo;
+        Preco = preco - desconto;
         Validar();
     }
+
+    //desconto maximo 70%
+    public void Descontar()
+    {      
+
+        if (Desconto >= Preco)
+        {
+            Preco -= Preco * DESCONTOMAXIMO;
+        }
+        else if(Desconto > 0) Preco -= Desconto;
+
+        Preco = Preco;
+    }
+
 
     public override string ToString()
     {
