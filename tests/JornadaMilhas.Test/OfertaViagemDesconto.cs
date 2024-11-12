@@ -32,15 +32,38 @@ namespace JornadaMilhas.Test
 
         }
 
-        [Fact]
-        public void RertornaDescontoMáximoQuandoValorDescontoMaiorQuePreco()
+        [Theory]
+        [InlineData(220.00, 30)]
+        [InlineData(100.00, 30)]            
+        public void RertornaDescontoMáximoQuandoValorDescontoMaiorOuIgualAoPreco(double desconto, double precoComDesconto)
         {
             //arrange
             Rota rota = new Rota("OrigemTeste", "DestinoTeste");
             Periodo periodo = new Periodo(DateTime.Parse("2024-10-28"), DateTime.Parse("2024-11-02"));
             double precoSemDesconto = 100.00;
-            double desconto = 220.00;
-            double precoComDesconto = 30;
+
+
+             OfertaViagem Oferta = new OfertaViagem(rota, periodo, precoSemDesconto);
+
+
+            //act
+            Oferta.Desconto = desconto;
+            Oferta.Descontar();
+
+            //assert
+            Assert.Equal(precoComDesconto, Oferta.Preco);
+
+        }
+
+        [Theory]
+        [InlineData(-100, 100.00)]       
+        public void RertornaPrecoNormalQuandoValorDescontoMenorQueZero(double desconto, double precoComDesconto)
+        {
+            //arrange
+            Rota rota = new Rota("OrigemTeste", "DestinoTeste");
+            Periodo periodo = new Periodo(DateTime.Parse("2024-10-28"), DateTime.Parse("2024-11-02"));
+            double precoSemDesconto = 100.00;
+           
 
             OfertaViagem Oferta = new OfertaViagem(rota, periodo, precoSemDesconto);
 
@@ -54,27 +77,7 @@ namespace JornadaMilhas.Test
 
         }
 
-        [Fact]
-        public void RertornaPrecoNormalQuandoValorDescontoNegativo()
-        {
-            //arrange
-            Rota rota = new Rota("OrigemTeste", "DestinoTeste");
-            Periodo periodo = new Periodo(DateTime.Parse("2024-10-28"), DateTime.Parse("2024-11-02"));
-            double precoSemDesconto = 100.00;
-            double desconto = -100;
-            double precoComDesconto = 100;
 
-            OfertaViagem Oferta = new OfertaViagem(rota, periodo, precoSemDesconto);
-
-
-            //act
-            Oferta.Desconto = desconto;
-            Oferta.Descontar();
-
-            //assert
-            Assert.Equal(precoComDesconto, Oferta.Preco);
-
-        }
 
 
 
